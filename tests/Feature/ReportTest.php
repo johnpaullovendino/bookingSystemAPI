@@ -9,8 +9,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Helpers\MoneyFormatter;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ReportTest extends TestCase
@@ -133,7 +132,7 @@ class ReportTest extends TestCase
         ]);
     }
 
-    public function test_reports_multipleData_expected()
+    public function test_reports_multipleReports_expected()
     {
         $reports = $this->createReport(2, 0, '');
 
@@ -179,7 +178,7 @@ class ReportTest extends TestCase
         ]);
     }
 
-    public function test_reports_multipleDataWithPromoCode_expected()
+    public function test_reports_multipleReportsWithPromoCode_expected()
     {
         $reports = $this->createReport(3, 1, 'PROMO10%Off');
 
@@ -249,6 +248,70 @@ class ReportTest extends TestCase
                     ]  
                 ],
             ]
+        ]);
+    }
+
+    public function test_reports_validRequestNoDataFound_expected()
+    {
+        $reports = $this->createReport(1, 0, '');
+
+        $request = [
+            'from_date' => Carbon::parse($reports[0]['created_at'])->addDay()->format('Y-m-d H:i:s'),
+            'to_date' => Carbon::parse($reports[0]['created_at'])->addDay()->format('Y-m-d H:i:s'),
+            'bookId' => 'sample_book_id',
+            'serviceName' => 'sample_service_name',
+        ];
+
+        $response = $this->call('POST', '/api/report', $request);
+        $response->assertJson([
+            'response_code' => '200',
+            'from_date' => $request['from_date'],
+            'to_date' => $request['to_date'],
+            'total_reports' => 0,
+            'data' => []
+        ]);
+    }
+
+    #[DataProvider('reportRequestParams')]
+    public function test_reports_incompleteRequest_expected($requestParams)
+    {
+        $request = [
+            'from_date' => '2024-01-31 23:59:59',
+            'to_date' => '2024-02-01 00:59:59',
+            'bookId' => 'sample_book_id',
+            'serviceName' => 'sample_service_name',
+        ];
+
+        unset($request[$requestParams]);
+
+        $response = $this->call('POST', '/api/report', $request);
+        $response->assertJson([
+            'response_code' => '400',
+        ]);
+
+    }
+
+    public static function reportRequestParams()
+    {
+        return [
+            ['from_date'],
+            ['to_date'],
+        ];
+    }
+
+    public function test_reports_invalidDateFormat_expected()
+    {
+        $request = [
+            'from_date' => 'invalid_date_format',
+            'to_date' => '2024-02-01 00:59:59',
+            'bookId' => 'sample_book_id',
+            'serviceName' => 'sample_service_name',
+        ];
+
+        $response = $this->call('POST', '/api/report', $request);
+        $response->assertJson([
+            'response_code' => '401',
+            'message' => 'Invalid date format.'
         ]);
     }
 }

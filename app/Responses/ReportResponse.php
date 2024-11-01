@@ -60,11 +60,11 @@ class ReportResponse
         ]);
     }
 
-    public function error(string $code, string $message = ''): JsonResponse
-    {
-        return $this->lib->json([
-            'error_code' => $code,
-            'error_message' => $message
-        ]);
-    }
+    // public function error(string $code, string $message = ''): JsonResponse
+    // {
+    //     return $this->lib->json([
+    //         'error_code' => $code,
+    //         'error_message' => $message
+    //     ]);
+    // }
 }

@@ -8,8 +8,7 @@ use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Business;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 
@@ -283,6 +282,74 @@ class BookingTest extends TestCase
         ]);
     }
 
+    public function test_booking_getBooking_expected()
+    {
+        $booking = Booking::first();
+
+        if (!$booking) {
+            $this->createBook(1,0, '');
+            $booking = Booking::first();
+        }
+
+        $id = $booking->id;
+
+        $response = $this->get('/api/getBooking/'. $id);
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Booking retrieved successfully',
+            'code' => 200,
+            'data' => [
+                'book_id' => $booking->book_id,
+                'service_id' => $booking->service_id,
+                'duration' => $booking->duration,
+                'name' => $booking->name,
+                'phoneNumber' => $booking->phoneNumber,
+                'email' => $booking->email,
+                'amount' => $booking->amount,
+                'promo' => $booking->promo,
+                'promoDetails' => [
+                    'promo_code' => '',
+                    'discount' => 0,
+                    'total_amount' => $booking->amount
+                    ]
+                ]
+            ]);
+    }
+
+    public function test_booking_getBookingWithPromo_expected()
+    {
+        $booking = Booking::first();
+
+        if (!$booking) {
+            $this->createBook(1,1, 'PROMO10%Off');
+            $booking = Booking::first();
+        }
+
+        $id = $booking->id;
+
+        $response = $this->get('/api/getBooking/'. $id);
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Booking retrieved successfully',
+            'code' => 200,
+            'data' => [
+                'book_id' => $booking->book_id,
+                'service_id' => $booking->service_id,
+                'duration' => $booking->duration,
+                'name' => $booking->name,
+                'phoneNumber' => $booking->phoneNumber,
+                'email' => $booking->email,
+                'amount' => $booking->amount,
+                'promo' => $booking->promo,
+                'promoDetails' => [
+                    'promo_code' => $booking->promo_code,
+                    'discount' => $booking->discount,
+                    'total_amount' => $booking->total_amount,
+                ]
+            ]
+        ]);
+    }
+
     public function test_booking_deleteBooking_expected()
     {
         $booking = Booking::first();
@@ -302,4 +369,64 @@ class BookingTest extends TestCase
         ]);
     }
 
+    #[DataProvider('createBookingRequestParams')]
+    public function test_booking_incompleteRequestData_expected($requestParams)
+    {
+        $request = [
+            'service_id' => 1,
+            'duration' => 'sample_duration',
+            'name'  =>  'sampleName',
+            'phoneNumber'  =>  'samplePhoneNumber',
+            'email'  =>  'sample@email.com',
+            'amount' => 100,
+            'promo' => 0,
+        ];
+
+        unset($request[$requestParams]);
+
+        $response = $this->post('/api/createBooking', $request);
+        $response->assertJson([
+            'response_code' => 400,
+        ]);
+    }
+
+    public static function createBookingRequestParams()
+    {
+        return [
+            ['service_id'],
+            ['duration'],
+            ['name'],
+            ['phoneNumber'],
+            ['email'],
+            ['amount'],
+            ['promo']
+        ];
+    }
+
+    #[DataProvider('createBookingInvalidParams')]
+    public function test_booking_invalidRequestData_expected($key, $value)
+    {
+        $request = [
+            'service_id' => 1,
+            'duration' => '2024-01-30 12:00:00',
+            'name'  =>  'John Doe',
+            'phoneNumber'  =>  '09123456789',
+            'email'  =>  'johndoe@example.com',
+            'amount' => 500,
+            'promo' => 0,
+        ];
+
+        
+    }
+
+    public static function createBookingInvalidParams()
+    {
+        return [
+            ['service_id' => 'invalid_service_id'],
+            ['duration' => 123],
+            ['name' => 123],
+            ['phoneNumber' => 09123456789],
+            ['email' => 123],
+        ];
+    }
 }

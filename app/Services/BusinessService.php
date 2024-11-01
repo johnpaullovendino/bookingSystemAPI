@@ -24,6 +24,11 @@ class BusinessService
         return $this->repo->createBusiness($request);
     }
 
+    public function getBusiness($id)
+    {
+        return $this->repo->getBusinessById($id);
+    }
+
     public function updateBusiness(Request $request, $id)
     {
         return $this->repo->updateBusiness($request, $id);

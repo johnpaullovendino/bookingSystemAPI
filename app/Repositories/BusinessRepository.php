@@ -25,6 +25,13 @@ class BusinessRepository
         return $business;
     }
 
+    public function getBusinessById($id)
+    {
+        $business = Business::findOrFail($id);
+
+        return $business;
+    }
+
     public function updateBusiness(Request $request, $id)
     {
         $updatedBusiness = Business::findOrFail($id);

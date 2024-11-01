@@ -83,6 +83,28 @@ class BookingResponse
         ]);
     }
 
+    public function getBookingSuccess($booking)
+    {
+        $bookingInfo = [
+            'book_id' => $booking->book_id,
+            'service_id' => $booking->service_id,
+            'duration' => $booking->duration,
+            'name' => $booking->name,
+            'phoneNumber' => $booking->phoneNumber,
+            'email' => $booking->email,
+            'amount' => $booking->amount,
+            'promo' => $booking->promo,
+            'promoDetails' => (object) $this->getPromoDetails($booking)
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking retrieved successfully',
+            'code' => 200,
+            'data' => $bookingInfo?? []
+        ]);
+    }
+
     public function deleteBookingSuccess()
     {
         return response()->json([

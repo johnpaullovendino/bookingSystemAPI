@@ -23,6 +23,11 @@ class BookingService
         return $this->repository->createBooking($request);
     }
 
+    public function getBooking($id)
+    {
+        return $this->repository->getBookingById($id);
+    }
+
     public function deleteBooking($id)
     {
         return $this->repository->deleteBooking($id);

@@ -103,6 +103,32 @@ class BusinessTest extends TestCase
         ]);
     }
 
+    public function test_business_getBusinessById_expected()
+    {
+        $business = Business::first();
+
+        if (!$business) {
+            $business = Business::create([
+                'name' => 'original_name',
+                'opening_hours' => '2024-01-01 08:00:00',
+                'status' => 'open',
+            ]);
+        }
+
+        $response = $this->call('GET', '/api/getBusiness/'. $business->id, );
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Business Retrieved Successfully',
+            'code' => 200,
+            'data' => [
+                'id' => $business->id,
+                'name' => $business['name'],
+                'opening_hours' => $business['opening_hours'],
+                'status' => $business['status']
+            ]
+        ]);
+    }
+
     public function test_business_updateBusiness_expected()
     {
         $business = Business::first();

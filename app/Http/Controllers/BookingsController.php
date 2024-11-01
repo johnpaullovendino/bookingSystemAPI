@@ -35,6 +35,13 @@ class BookingsController extends Controller
         return $this->response->createBookingSuccess($createdBooking);
     }
 
+    public function show($id)
+    {
+        $booking = $this->service->getBooking($id);
+
+        return $this->response->getBookingSuccess($booking);
+    }
+
     public function delete($id)
     {
         $this->service->deleteBooking($id);

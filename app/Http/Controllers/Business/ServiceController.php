@@ -36,6 +36,13 @@ class ServiceController extends Controller
         return $this->response->createServiceSuccess($service);
     }
 
+    public function show($id)
+    {
+        $service = $this->service->getService($id);
+
+        return $this->response->showServiceSuccess($service);
+    }
+
     public function update(Request $request, $id)
     {
         $this->validator->validateService($request);

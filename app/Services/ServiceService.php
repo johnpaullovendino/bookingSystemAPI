@@ -24,6 +24,11 @@ class ServiceService
         return $this->repository->createService($request);
     }
 
+    public function getService($id)
+    {
+        return $this->repository->getServiceById($id);
+    }
+
     public function updateService(Request $request, $id)
     {
         return $this->repository->updateService($request, $id);

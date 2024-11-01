@@ -37,6 +37,13 @@ class BusinessController extends Controller
         return $this->response->createBusinessSuccess($business);
     }
 
+    public function show($id)
+    {
+        $business = $this->service->getBusiness($id);
+
+        return $this->response->getBusinessSuccess($business);
+    }
+
     public function update(Request $request, $id)
     {
         $this->validator->validateBusiness($request);

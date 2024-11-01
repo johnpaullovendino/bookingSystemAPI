@@ -49,6 +49,23 @@ class ServiceResponse
         ]);
     }
 
+    public function showServiceSuccess($service)
+    {
+        $serviceInfo = [
+            'business_id' => $service->business_id,
+            'name' => $service->name,
+            'description' => $service->description,
+            'price' => $service->price,
+        ];
+
+        return $this->lib->json([
+            'success' => true,
+            'message' => 'Service Retrieved Successfully',
+            'code' => 200,
+            'data' => $serviceInfo
+        ]);
+    }
+
     public function updateServiceSuccess($service)
     {
         $updatedInfo = [

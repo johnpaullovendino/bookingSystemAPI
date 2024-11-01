@@ -46,6 +46,20 @@ class ServiceRepository
         return $service;
     }
 
+    public function getServiceById($id)
+    {
+        $service = Service::findOrFail($id);
+
+        if (!$service) {
+            return response()->json([
+                'response_code' => 404,
+                'message' => 'Service not found',
+            ]);
+        }
+
+        return $service;
+    }
+
     public function updateService(Request $request, $id)
     {
         $service = Service::findOrFail($id);

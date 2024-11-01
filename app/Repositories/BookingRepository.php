@@ -62,6 +62,20 @@ class BookingRepository
         return $booking;
     }
 
+    public function getBookingById($id)
+    {
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json([
+                'response_code' => 404,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        return $booking;
+    }
+
     public function deleteBooking($id)
     {
         $booking = Booking::findOrFail($id);

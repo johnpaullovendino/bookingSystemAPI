@@ -119,48 +119,84 @@ class ServiceTest extends TestCase
         ]);
     }
 
-public function test_service_updateService_expected()
-{
-    $business = Business::first();
+    public function test_service_getService_expected()
+    {
+        $business = Business::first();
 
-    if (!$business) {
-        $business = Business::create([
-            'name' => 'sample_business',
-            'opening_hours' => '2024-01-29 12:00:00',
-            'status' => 'open',
+        if (!$business) {
+            $business = Business::create([
+                'name' => 'sample_business',
+                'opening_hours' => '2024-01-29 12:00:00',
+                'status' => 'open',
+            ]);
+        }
+        $service = Service::first();
+
+        if (!$service) {
+            $service = Service::create([
+                'name' => 'original_service_name',
+                'business_id' => $business->id,
+                'description' => 'original description',
+                'price' => 500
+            ]);
+        }
+
+        $response = $this->call('GET', '/api/getService/'. $service->id);
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Service Retrieved Successfully',
+            'code' => 200,
+            'data' => [
+                'business_id' => $service['business_id'],
+                'name' => $service['name'],
+                'description' => $service['description'],
+                'price' => $service['price'],
+            ]
         ]);
     }
 
-    $service = Service::first();
-    if (!$service) {
-        $service = Service::create([
-            'name' => 'original_service_name',
-            'business_id' => $business->id, 
-            'description' => 'original description',
-            'price' => 500
+    public function test_service_updateService_expected()
+    {
+        $business = Business::first();
+
+        if (!$business) {
+            $business = Business::create([
+                'name' => 'sample_business',
+                'opening_hours' => '2024-01-29 12:00:00',
+                'status' => 'open',
+            ]);
+        }
+
+        $service = Service::first();
+        if (!$service) {
+            $service = Service::create([
+                'name' => 'original_service_name',
+                'business_id' => $business->id, 
+                'description' => 'original description',
+                'price' => 500
+            ]);
+        }
+
+        $request = [
+            'name' => 'updated_service_name',
+            'business_id' => 1, 
+            'description' => 'updated description',
+            'price' => 600
+        ];
+
+        $response = $this->call('PUT', '/api/updateService/' . $service->id, $request);
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Service Updated Successfully',
+            'code' => 200,
+            'data' => [
+                'name' => $request['name'],
+                'description' => $request['description'],
+                'price' => $request['price'],
+                'business_id' => $request['business_id']
+            ]
         ]);
     }
-
-    $request = [
-        'name' => 'updated_service_name',
-        'business_id' => 1, 
-        'description' => 'updated description',
-        'price' => 600
-    ];
-
-    $response = $this->call('PUT', '/api/updateService/' . $service->id, $request);
-    $response->assertJson([
-        'success' => true,
-        'message' => 'Service Updated Successfully',
-        'code' => 200,
-        'data' => [
-            'name' => $request['name'],
-            'description' => $request['description'],
-            'price' => $request['price'],
-            'business_id' => $request['business_id']
-        ]
-    ]);
-}
 
     public function test_service_deleteBusiness_expected()
     {

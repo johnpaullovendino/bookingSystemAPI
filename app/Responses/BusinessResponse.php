@@ -50,6 +50,23 @@ class BusinessResponse
         ]);
     }
 
+    public function getBusinessSuccess($business)
+    {
+        $businessInfo = [
+            'id' => $business->id,
+            'name' => $business->name,
+            'opening_hours' => $business->opening_hours,
+            'status' => $business->status
+        ];
+
+        return $this->lib->json([
+            'success' => true,
+            'message' => 'Business Retrieved Successfully',
+            'code' => 200,
+            'data' => $businessInfo
+        ]);
+    }
+
     public function updateBusinessSuccess($business)
     {
         $businessInfo = [
