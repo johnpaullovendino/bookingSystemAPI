@@ -31,8 +31,8 @@ class RequestValidator
     {
         $rules = [
             'name' => 'required|string',
-            'opening_hours' => 'required',
-            'status' => 'required'
+            'opening_hours' => 'required|string',
+            'status' => 'required|string'
         ];
 
         $this->validate($request, $rules);
@@ -55,7 +55,7 @@ class RequestValidator
     public function validateBookings(Request $request)
     {
         $rules = [
-            'service_id' => 'required',
+            'service_id' => 'required|integer',
             'duration' => 'required|string',
             'name'  =>  'required|string',
             'phoneNumber'  =>  'required|string',

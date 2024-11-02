@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class BusinessTest extends TestCase
 {
@@ -179,5 +180,60 @@ class BusinessTest extends TestCase
             'message' => 'Business deleted successfully',
             'code' => 201,
         ]);
+    }
+
+    #[DataProvider('createBusinessIncompleteParams')]
+    public function test_business_incompleteRequestData_expected($requestParams)
+    {
+        $request = [
+            'name' => 'sample_name',
+            'opening_hours' => '2024-01-29 14:43:22',
+            'status' => 'open'
+        ];
+
+        unset($request[$requestParams]);
+
+        $response = $this->call('POST', '/api/createBusiness', $request);
+        $response->assertJson([
+            'response_code' => 400
+        ]);
+    }
+
+    public static function createBusinessIncompleteParams()
+    {
+        return [
+            ['name'],
+            ['opening_hours'],
+            ['status']
+        ];
+    }
+
+    #[DataProvider('createBusinessInvalidParams')]
+    public function test_business_invalidRequestData_expected($key, $value)
+    {
+        $request = [
+            'name' => 'sample_name',
+            'opening_hours' => '2024-01-29 14:43:22',
+            'status' => 'open'
+        ];
+
+        $request[$key] = $value;
+
+        $response = $this->call('POST', '/api/createBusiness', $request);
+        $response->assertJson([
+            'response_code' => 400
+        ]);
+    }
+
+    public static function createBusinessInvalidParams()
+    {
+        return [
+            ['name', 123],
+            ['name', null],
+            ['opening_hours', 123],
+            ['opening_hours', null],
+            ['status', 123],
+            ['status', null]
+        ];
     }
 }

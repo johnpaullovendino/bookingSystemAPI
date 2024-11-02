@@ -416,17 +416,31 @@ class BookingTest extends TestCase
             'promo' => 0,
         ];
 
-        
+        $request[$key] = $value;
+
+        $response = $this->post('/api/createBooking', $request);
+        $response->assertJson([
+            'response_code' => 400
+        ]);
     }
 
     public static function createBookingInvalidParams()
     {
         return [
-            ['service_id' => 'invalid_service_id'],
-            ['duration' => 123],
-            ['name' => 123],
-            ['phoneNumber' => 09123456789],
-            ['email' => 123],
+            ['service_id', 'invalid_service_id'],
+            ['service_id', null],
+            ['duration', 123],
+            ['duration', null],
+            ['name', 123],
+            ['name', null],
+            ['phoneNumber', 9123456789],
+            ['phoneNumber', null],
+            ['email', 123],
+            ['email', null],
+            ['amount', 'invalid_amount'],
+            ['amount', null],
+            ['promo', 'true'],
+            ['promo', null],
         ];
     }
 }
