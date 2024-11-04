@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\Business;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 
@@ -24,6 +25,7 @@ class BookingTest extends TestCase
         DB::table('services')->truncate();
         DB::table('business')->truncate();
         DB::table('bookings')->truncate();
+        DB::table('reports')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
@@ -56,6 +58,8 @@ class BookingTest extends TestCase
                 'phoneNumber' => $faker->phoneNumber(),
                 'email' => $faker->email(),
                 'amount' => $service->price,
+                'payment_method' => 'cash',
+                'note' => $faker->sentence(),
                 'promo' => $hasPromo,
                 'promo_code' => $promoCode,
                 'discount' => $discount,
@@ -87,6 +91,8 @@ class BookingTest extends TestCase
                     'phoneNumber' => $bookings[0]['phoneNumber'],
                     'email' => $bookings[0]['email'],
                     'amount' => $bookings[0]['amount'],
+                    'payment_method' => $bookings[0]['payment_method'],
+                    'note' => $bookings[0]['note'],
                     'promo' => $bookings[0]['promo'],
                     'promoDetails' => [
                             'promo_code' => '',
@@ -102,6 +108,8 @@ class BookingTest extends TestCase
                     'phoneNumber' => $bookings[1]['phoneNumber'],
                     'email' => $bookings[1]['email'],
                     'amount' => $bookings[1]['amount'],
+                    'payment_method' => $bookings[1]['payment_method'],
+                    'note' => $bookings[1]['note'],
                     'promo' => $bookings[1]['promo'],
                     'promoDetails' => [
                             'promo_code' => '',
@@ -117,6 +125,8 @@ class BookingTest extends TestCase
                     'phoneNumber' => $bookings[2]['phoneNumber'],
                     'email' => $bookings[2]['email'],
                     'amount' => $bookings[2]['amount'],
+                    'payment_method' => $bookings[2]['payment_method'],
+                    'note' => $bookings[2]['note'],
                     'promo' => $bookings[2]['promo'],
                     'promoDetails' => [
                             'promo_code' => '',
@@ -147,11 +157,13 @@ class BookingTest extends TestCase
                     'phoneNumber' => $bookings[0]['phoneNumber'],
                     'email' => $bookings[0]['email'],
                     'amount' => $bookings[0]['amount'],
+                    'payment_method' => $bookings[0]['payment_method'],
+                    'note' => $bookings[0]['note'],
                     'promo' => $bookings[0]['promo'],
                     'promoDetails' => [
-                        'promo_code' => $bookings[1]['promo_code'],
-                        'discount' => $bookings[1]['discount'],
-                        'total_amount' => $bookings[1]['total_amount'],
+                        'promo_code' => $bookings[0]['promo_code'],
+                        'discount' => $bookings[0]['discount'],
+                        'total_amount' => $bookings[0]['total_amount'],
                     ]
                 ],
                 [
@@ -162,6 +174,8 @@ class BookingTest extends TestCase
                     'phoneNumber' => $bookings[1]['phoneNumber'],
                     'email' => $bookings[1]['email'],
                     'amount' => $bookings[1]['amount'],
+                    'payment_method' => $bookings[1]['payment_method'],
+                    'note' => $bookings[1]['note'],
                     'promo' => $bookings[1]['promo'],
                     'promoDetails' => [
                             'promo_code' => $bookings[1]['promo_code'],
@@ -177,6 +191,8 @@ class BookingTest extends TestCase
                     'phoneNumber' => $bookings[2]['phoneNumber'],
                     'email' => $bookings[2]['email'],
                     'amount' => $bookings[2]['amount'],
+                    'payment_method' => $bookings[2]['payment_method'],
+                    'note' => $bookings[2]['note'],
                     'promo' => $bookings[2]['promo'],
                     'promoDetails' => [
                             'promo_code' => $bookings[2]['promo_code'],
@@ -212,7 +228,9 @@ class BookingTest extends TestCase
             'email'  =>  'johndoe@example.com',
             'promo' => 0,
             'promo_code'  => '',
-            'amount' => 500
+            'amount' => 500,
+            'payment_method' => 'cash',
+            'note' => 'sample note'
         ];
 
         $response = $this->post('/api/createBooking', $request);
@@ -227,6 +245,8 @@ class BookingTest extends TestCase
                 'phoneNumber' => $request['phoneNumber'],
                 'email' => $request['email'],
                 'amount' => $request['amount'],
+                'payment_method' => $request['payment_method'],
+                'note' => $request['note'],
                 'promo' => $request['promo'],
                 'promo_code' => $request['promo_code'],
                 'discount' => 0,
@@ -259,7 +279,9 @@ class BookingTest extends TestCase
             'email'  =>  'johndoe@example.com',
             'promo' => 0,
             'promo_code'  => 'PROMO10%Off',
-            'amount' => 500
+            'amount' => 500,
+            'payment_method' => 'cash',
+            'note' => 'sample note'
         ]; 
 
         $response = $this->post('/api/createBooking', $request);
@@ -274,6 +296,8 @@ class BookingTest extends TestCase
                 'phoneNumber' => $request['phoneNumber'],
                 'email' => $request['email'],
                 'amount' => $request['amount'],
+                'payment_method' => $request['payment_method'],
+                'note' => $request['note'],
                 'promo' => 1,
                 'promo_code' => $request['promo_code'],
                 'discount' => 50,

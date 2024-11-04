@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('phoneNumber');
             $table->string('email');
             $table->float('amount');
+            $table->string('payment_method');
+            $table->string('note');
             $table->boolean('promo');
             $table->string('promo_code')->nullable();
             $table->float('discount')->nullable();

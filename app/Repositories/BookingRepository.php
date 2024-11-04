@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Report;
 use App\Models\Booking;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -42,8 +43,10 @@ class BookingRepository
         $booking->name = $request->name;
         $booking->phoneNumber = $request->phoneNumber;
         $booking->email = $request->email;
+        $booking->payment_method = $request->payment_method;
+        $booking->note = $request->note;
         $booking->promo = 0;
-    
+
         $promoCode = $request->promo_code ?? '';
         $discount = 0;
     
@@ -58,6 +61,22 @@ class BookingRepository
         $booking->total_amount = $booking->amount - $discount;
     
         $booking->save();
+
+        $report = new Report();
+        $report->book_id = $booking->id;
+        $report->name = $request->name;
+        $report->service_name = $service->name;
+        $report->duration = $request->duration;
+        $report->amount = $service->price;
+        $report->payment_method = $request->payment_method;
+        $report->payment_status = 'paid';
+        $report->status = 'completed';
+        $report->note = $request->note;
+        $report->promo = $booking->promo;
+        $report->promo_code = $booking->promo_code;
+        $report->discount = $booking->discount;
+        $report->total_amount = $booking->total_amount;
+        $report->save();
 
         return $booking;
     }

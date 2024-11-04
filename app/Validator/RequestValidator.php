@@ -61,6 +61,8 @@ class RequestValidator
             'phoneNumber'  =>  'required|string',
             'email'  =>  'required|email',
             'amount' => 'required|integer',
+            'payment_method' => 'required|string',
+            'note' => 'required|string',
             'promo' => 'required|boolean',
             'promo_code'  =>  'nullable|string',
             'discount' => 'nullable|integer',

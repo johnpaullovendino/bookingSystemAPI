@@ -18,6 +18,8 @@ class Booking extends Model
         'phoneNumber',
         'email',
         'amount',
+        'payment_method',
+        'note',
         'promo',
         'promo_code',
         'discount',

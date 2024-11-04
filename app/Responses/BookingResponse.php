@@ -46,6 +46,8 @@ class BookingResponse
                 'phoneNumber' => $booking->phoneNumber,
                 'email' => $booking->email,
                 'amount' => $booking->amount,
+                'payment_method' => $booking->payment_method,
+                'note' => $booking->note,
                 'promo' => $booking->promo,
                 'promoDetails' => (object) $this->getPromoDetails($booking)
             ];
@@ -69,6 +71,8 @@ class BookingResponse
             'phoneNumber' => $createdBooking->phoneNumber,
             'email' => $createdBooking->email,
             'amount' => $createdBooking->amount,
+            'payment_method' => $createdBooking->payment_method,
+            'note' => $createdBooking->note,
             'promo' => $createdBooking->promo,
             'promo_code' => $createdBooking->promo_code,
             'discount' => $createdBooking->discount,
@@ -93,6 +97,8 @@ class BookingResponse
             'phoneNumber' => $booking->phoneNumber,
             'email' => $booking->email,
             'amount' => $booking->amount,
+            'payment_method' => $booking->payment_method,
+            'note' => $booking->note,
             'promo' => $booking->promo,
             'promoDetails' => (object) $this->getPromoDetails($booking)
         ];
